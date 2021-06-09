@@ -1,0 +1,46 @@
+server:
+  port: 8201  #端口号
+
+spring:
+  application:
+    name: service-hosp   #服务名
+  profiles:
+    active: dev   #环境设置
+  #数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yygh_hosp?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 19970815
+  #返回json格式的全局时间格式
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  #nacos服务地址
+#  cloud:
+ #   nacos:
+ #     discovery:
+  #      server-addr: localhost:8848
+    #sentinel
+#    sentinel:
+#      transport:
+ #       dashboard: localhost:8858
+#        #port 不用找 默认从8719,开始找端口
+  #mongodb
+#  data:
+ #   mongodb:
+  #    host: localhost
+  #    port: 27017
+   #   database: yygh_hosp
+  #rabbitmq
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+#配置mapper.xml文件路径
+mybatis-plus:
+  mapper-locations: classpath:com/ljs/yygh/mapper/xml/*.xml
+
+
