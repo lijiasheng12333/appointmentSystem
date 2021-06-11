@@ -59,6 +59,7 @@ public class HospitalSetController {
      * @param current 当前页
      * @param limit 每页限制数量
      */
+    @ApiOperation("查询医院信息记录(分页)")
     @PostMapping("findPageHospSet/{current}/{limit}")
     public Result findPageHospSet(@PathVariable("current") Long current,
                                   @PathVariable("limit") Long limit,
@@ -81,6 +82,7 @@ public class HospitalSetController {
      * 添加医院信息，status为医院状态，1代表可以使用，0代表已锁定不能使用。signkey为密钥，不手动添加
      * @param hospitalSet
      */
+    @ApiOperation("添加医院信息")
     @PostMapping("/saveHospitalSet")
     public Result saveHospitalSet(@RequestBody HospitalSet hospitalSet) {
         hospitalSet.setStatus(1);
@@ -98,6 +100,7 @@ public class HospitalSetController {
      * 根据id查询医院信息
      * @param id 医院id
      */
+    @ApiOperation("查询医院信息(id)")
     @GetMapping("/getHospSet/{id}")
     public Result getHospSet(@PathVariable("id") Long id) {
         HospitalSet byId = hospitalSetService.getById(id);
@@ -108,6 +111,7 @@ public class HospitalSetController {
      * 修改医院信息
      * @param hospitalSet
      */
+    @ApiOperation("修改医院信息")
     @PostMapping("/updateHospSet")
     public Result updateHospSet(@RequestBody HospitalSet hospitalSet) {
         boolean flag = hospitalSetService.updateById(hospitalSet);
@@ -122,6 +126,7 @@ public class HospitalSetController {
      * 根据id批量删除医院信息
      * @param idList 批量删除的医院的所有id
      */
+    @ApiOperation("删除医院记录")
     @DeleteMapping("batchRemove")
     public Result batchRemoveHospSet(@RequestBody List<Long> idList) {
         hospitalSetService.removeByIds(idList);
@@ -133,6 +138,7 @@ public class HospitalSetController {
      * @param id 医院id
      * @param status 状态码 1代表锁定，0代表未锁定
      */
+    @ApiOperation("对医院状态进行锁定操作")
     @PutMapping("/lockHospSet/{id}/{status}")
     public Result lockHospSet(@PathVariable("id") Long id,
                               @PathVariable("status") Integer status) {
@@ -150,6 +156,7 @@ public class HospitalSetController {
      * 发送签名key，最后以短信的形式进行发送
      * @param id 医院id
      */
+    @ApiOperation("发送签名key")
     @GetMapping("/sendKey/{id}")
     public Result sendKey(@PathVariable("id") Long id) {
         HospitalSet hospitalSet = hospitalSetService.getById(id);
