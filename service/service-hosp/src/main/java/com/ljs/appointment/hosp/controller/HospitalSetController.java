@@ -19,7 +19,6 @@ import java.util.Random;
  * author ljs
  * create 2021-3-10
  */
-
 @RestController
 @RequestMapping("/admin/hosp/hospital")
 public class HospitalSetController {
@@ -57,8 +56,10 @@ public class HospitalSetController {
 
     /**
      * 查询医院记录，以医院名字以及医院编码作为条件。查询可以为null，hostname为医院名字，设置为模糊查询
+     * @param current 当前页
+     * @param limit 每页限制数量
      */
-    @PostMapping("/findPageHospSet/{current}/{limit}")
+    @PostMapping("findPageHospSet/{current}/{limit}")
     public Result findPageHospSet(@PathVariable("current") Long current,
                                   @PathVariable("limit") Long limit,
                                   @RequestBody(required = false) HospitalQueryVo hospitalSetQuery) {
@@ -78,8 +79,9 @@ public class HospitalSetController {
 
     /**
      * 添加医院信息，status为医院状态，1代表可以使用，0代表已锁定不能使用。signkey为密钥，不手动添加
+     * @param hospitalSet
      */
-    @PostMapping("saveHospitalSet")
+    @PostMapping("/saveHospitalSet")
     public Result saveHospitalSet(@RequestBody HospitalSet hospitalSet) {
         hospitalSet.setStatus(1);
         Random random = new Random();
@@ -90,6 +92,71 @@ public class HospitalSetController {
         } else {
             return Result.fail();
         }
+    }
+
+    /**
+     * 根据id查询医院信息
+     * @param id 医院id
+     */
+    @GetMapping("/getHospSet/{id}")
+    public Result getHospSet(@PathVariable("id") Long id) {
+        HospitalSet byId = hospitalSetService.getById(id);
+        return Result.ok(byId);
+    }
+
+    /**
+     * 修改医院信息
+     * @param hospitalSet
+     */
+    @PostMapping("/updateHospSet")
+    public Result updateHospSet(@RequestBody HospitalSet hospitalSet) {
+        boolean flag = hospitalSetService.updateById(hospitalSet);
+        if (flag) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 根据id批量删除医院信息
+     * @param idList 批量删除的医院的所有id
+     */
+    @DeleteMapping("batchRemove")
+    public Result batchRemoveHospSet(@RequestBody List<Long> idList) {
+        hospitalSetService.removeByIds(idList);
+        return Result.ok();
+    }
+
+    /**
+     * 对医院状态进行锁定设置
+     * @param id 医院id
+     * @param status 状态码 1代表锁定，0代表未锁定
+     */
+    @PutMapping("/lockHospSet/{id}/{status}")
+    public Result lockHospSet(@PathVariable("id") Long id,
+                              @PathVariable("status") Integer status) {
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        hospitalSet.setStatus(status);
+        boolean flag = hospitalSetService.updateById(hospitalSet);
+        if (flag) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 发送签名key，最后以短信的形式进行发送
+     * @param id 医院id
+     */
+    @GetMapping("/sendKey/{id}")
+    public Result sendKey(@PathVariable("id") Long id) {
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        String signKey = hospitalSet.getSignKey();
+        String hoscode = hospitalSet.getHoscode();
+        //这里有短信发送服务 目前没做 留出来
+        return Result.ok();
     }
 
 }
