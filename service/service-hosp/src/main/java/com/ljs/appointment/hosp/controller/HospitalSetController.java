@@ -60,7 +60,7 @@ public class HospitalSetController {
      * @param limit 每页限制数量
      */
     @ApiOperation("查询医院信息记录(分页)")
-    @PostMapping("findPageHospSet/{current}/{limit}")
+    @PostMapping("/findPageHospSet/{current}/{limit}")
     public Result findPageHospSet(@PathVariable("current") Long current,
                                   @PathVariable("limit") Long limit,
                                   @RequestBody(required = false) HospitalQueryVo hospitalSetQuery) {
