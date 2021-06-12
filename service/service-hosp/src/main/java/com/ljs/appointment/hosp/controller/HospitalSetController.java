@@ -7,6 +7,7 @@ import com.ljs.appointment.hosp.service.HospitalSetService;
 import com.ljs.appointment.model.hosp.HospitalSet;
 import com.ljs.appointment.result.Result;
 import com.ljs.appointment.vo.hosp.HospitalQueryVo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -19,8 +20,10 @@ import java.util.Random;
  * author ljs
  * create 2021-3-10
  */
+@Api("医院管理信息设置")
 @RestController
 @RequestMapping("/admin/hosp/hospital")
+@CrossOrigin
 public class HospitalSetController {
     @Autowired
     private HospitalSetService hospitalSetService;
@@ -58,6 +61,7 @@ public class HospitalSetController {
      * 查询医院记录，以医院名字以及医院编码作为条件。查询可以为null，hostname为医院名字，设置为模糊查询
      * @param current 当前页
      * @param limit 每页限制数量
+     * @return pageHospSet 查询结果
      */
     @ApiOperation("查询医院信息记录(分页)")
     @PostMapping("/findPageHospSet/{current}/{limit}")
@@ -75,7 +79,7 @@ public class HospitalSetController {
             wrapper.eq("hoscode", hoscode);
         }
         Page<HospitalSet> pageHospSet = hospitalSetService.page(page, wrapper);
-        return Result.ok();
+        return Result.ok(pageHospSet);
     }
 
     /**
