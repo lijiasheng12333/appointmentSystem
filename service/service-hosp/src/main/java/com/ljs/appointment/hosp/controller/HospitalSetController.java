@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * author ljs
- * create 2021-3-10
+ * @author ljs
+ * @create 2021-3-10
  */
 @Api("医院管理信息设置")
 @RestController
