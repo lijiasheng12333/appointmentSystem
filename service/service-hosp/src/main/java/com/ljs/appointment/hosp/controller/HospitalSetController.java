@@ -47,7 +47,7 @@ public class HospitalSetController {
      * @return boolean
      */
     @ApiOperation("删除医院信息(逻辑)")
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public Result removeHospSet(@PathVariable("id") Long id) {
         boolean b = hospitalSetService.removeById(id);
         if (b) {
@@ -131,7 +131,7 @@ public class HospitalSetController {
      * @param idList 批量删除的医院的所有id
      */
     @ApiOperation("删除医院记录")
-    @DeleteMapping("batchRemove")
+    @DeleteMapping("/batchRemove")
     public Result batchRemoveHospSet(@RequestBody List<Long> idList) {
         hospitalSetService.removeByIds(idList);
         return Result.ok();
