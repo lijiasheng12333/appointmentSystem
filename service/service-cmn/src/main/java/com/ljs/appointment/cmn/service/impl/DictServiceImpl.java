@@ -22,6 +22,11 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict>
         QueryWrapper<Dict> wrapper = new QueryWrapper<>();
         wrapper.eq("parent_id", id);
         List<Dict> dictList = baseMapper.selectList(wrapper);
+        for (Dict dict:dictList) {
+            Long dictId = dict.getId();
+            boolean isChild = this.isChildren(dictId);
+            dict.setHasChildren(isChild);
+        }
         return dictList;
     }
 
