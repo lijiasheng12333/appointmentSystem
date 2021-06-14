@@ -18,6 +18,16 @@ spring:
     time-zone: GMT+8
   redis:
     host: 169.254.27.128
+    database: 0
+    timeout: 1800000
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: 1
+        #最大阻塞时间(如负数 则无限制)
+        max-idle: 5
+        min-idle: 0
+
 
 #配置mapper.xml文件路径
 mybatis-plus:

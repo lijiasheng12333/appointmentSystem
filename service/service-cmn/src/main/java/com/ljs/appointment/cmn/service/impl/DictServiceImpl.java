@@ -9,6 +9,8 @@ import com.ljs.appointment.cmn.service.DictService;
 import com.ljs.appointment.model.cmn.Dict;
 import com.ljs.appointment.vo.cmn.DictEeVo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +31,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict>
      * @return dictList 所有查询结果
      */
     @Override
+    @Cacheable(value = "dict", keyGenerator = "keyGenerator")
     public List<Dict> findChildData(Long id) {
         QueryWrapper<Dict> wrapper = new QueryWrapper<>();
         wrapper.eq("parent_id", id);
@@ -55,9 +58,11 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict>
 
     /**
      * 进行数据导出
+     * 由于使用缓存机制，调用此方法后需清空缓存
      * @param response
      */
     @Override
+    @CacheEvict(value = "dict", allEntries = true)
     public void exportData(HttpServletResponse response) {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
