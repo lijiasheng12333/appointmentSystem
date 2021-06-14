@@ -1,4 +1,4 @@
-package com.ljs.appointment.common.config.Swagger2Config;
+package com.ljs.appointment.common.config;
 
 import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
