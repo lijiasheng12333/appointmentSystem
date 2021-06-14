@@ -58,11 +58,9 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict>
 
     /**
      * 进行数据导出
-     * 由于使用缓存机制，调用此方法后需清空缓存
      * @param response
      */
     @Override
-    @CacheEvict(value = "dict", allEntries = true)
     public void exportData(HttpServletResponse response) {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
@@ -86,7 +84,12 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict>
 
     }
 
+    /**
+     * 由于使用缓存机制，调用此方法后需清空缓存
+     * @param file
+     */
     @Override
+    @CacheEvict(value = "dict", allEntries = true)
     public void importData(MultipartFile file) {
         try {
             EasyExcel.read(file.getInputStream(), DictEeVo.class, new DictListener(baseMapper)).sheet().doRead();
