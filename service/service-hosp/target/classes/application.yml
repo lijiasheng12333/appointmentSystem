@@ -28,12 +28,12 @@ spring:
 #      transport:
  #       dashboard: localhost:8858
 #        #port 不用找 默认从8719,开始找端口
-  #mongodb
-#  data:
- #   mongodb:
-  #    host: localhost
-  #    port: 27017
-   #   database: yygh_hosp
+  #mongodb配置
+  data:
+    mongodb:
+      host: 169.254.27.128
+      port: 27017
+      database: yygh_hosp
   #rabbitmq
   rabbitmq:
     host: localhost
