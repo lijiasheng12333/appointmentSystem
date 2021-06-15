@@ -1,9 +1,11 @@
 package com.ljs.appointment.hosp.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ljs.appointment.hosp.reponsitory.HospitalReponsitory;
 import com.ljs.appointment.hosp.service.HospitalService;
 import com.ljs.appointment.model.hosp.Hospital;
+import com.ljs.appointment.model.hosp.HospitalSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,4 +41,5 @@ public class HospitalServiceImpl implements HospitalService {
             hospitalReponsitory.save(hospital);
         }
     }
+
 }
