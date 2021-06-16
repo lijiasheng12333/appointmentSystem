@@ -116,6 +116,18 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict>
         return finalDict.getName();
     }
 
+    @Override
+    public List<Dict> findByDictCode(String dictCode) {
+        //根据dictcode获取对应id
+        Dict dict = this.getDictBtDictCode(dictCode);
+        if (dict == null) {
+            return null;
+        }
+        List<Dict> childData = this.findChildData(dict.getId());
+        //根据id获取子节点
+        return childData;
+    }
+
     //公共方法
     private Dict getDictBtDictCode(String dictCode) {
         QueryWrapper<Dict> wrapper = new QueryWrapper<>();

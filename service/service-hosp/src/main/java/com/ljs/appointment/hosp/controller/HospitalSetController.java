@@ -20,7 +20,7 @@ import java.util.Random;
  * @author ljs
  * @create 2021-3-10
  */
-@Api("医院管理信息设置")
+@Api(tags = "医院管理信息设置")
 @RestController
 @RequestMapping("/admin/hosp/hospital")
 @CrossOrigin

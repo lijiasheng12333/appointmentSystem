@@ -16,7 +16,7 @@ import java.util.List;
  * @author ljs
  * @create 2021-3-13
  */
-@Api("数据字典接口")
+@Api(tags = "数据字典接口")
 @RestController
 @RequestMapping("/admin/cmn/dict")
 @CrossOrigin
@@ -68,4 +68,13 @@ public class DictController {
         String dictName = dictService.getDictName("", value);
         return dictName;
     }
+
+    //根据dictCode获取下级节点
+    @ApiOperation(value = "根据dictCode获取下级节点")
+    @GetMapping(value = "/findByDictCode/{dictCode}")
+    public Result findByDictCode(@PathVariable("dictCode") String dictCode) {
+        List<Dict> list = dictService.findByDictCode(dictCode);
+        return Result.ok(list);
+    }
+
 }
