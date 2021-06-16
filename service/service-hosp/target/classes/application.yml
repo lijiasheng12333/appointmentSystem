@@ -40,6 +40,10 @@ spring:
     port: 5672
     username: guest
     password: guest
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
 
 #配置mapper.xml文件路径
 mybatis-plus:

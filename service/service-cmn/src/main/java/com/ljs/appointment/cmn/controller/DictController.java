@@ -54,4 +54,18 @@ public class DictController {
         return Result.ok();
     }
 
+    //根据dictcode和value进行查询
+    @GetMapping("/getName/{dictCode}/{value}")
+    public String getName(@PathVariable("dictCode") String dictCode,
+                          @PathVariable("value") String value) {
+        String dictName = dictService.getDictName(dictCode, value);
+        return dictName;
+    }
+
+    //根据value进行查询
+    @GetMapping("/getName/{value}")
+    public String getName(@PathVariable("value") String value) {
+        String dictName = dictService.getDictName("", value);
+        return dictName;
+    }
 }

@@ -27,7 +27,10 @@ spring:
         #最大阻塞时间(如负数 则无限制)
         max-idle: 5
         min-idle: 0
-
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
 
 #配置mapper.xml文件路径
 mybatis-plus:

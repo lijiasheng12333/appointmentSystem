@@ -6,7 +6,10 @@ import com.ljs.appointment.hosp.reponsitory.HospitalReponsitory;
 import com.ljs.appointment.hosp.service.HospitalService;
 import com.ljs.appointment.model.hosp.Hospital;
 import com.ljs.appointment.model.hosp.HospitalSet;
+import com.ljs.appointment.vo.hosp.HospitalQueryVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -46,6 +49,25 @@ public class HospitalServiceImpl implements HospitalService {
     public Hospital getByHoscode(String hoscode) {
         Hospital hospitalByHoscode = hospitalReponsitory.getHospitalByHoscode(hoscode);
         return hospitalByHoscode;
+    }
+
+    //医院列表查询
+    @Override
+    public Page<Hospital> selectPage(Integer page, Integer limit, HospitalQueryVo hospitalQueryVo) {
+        //创建pageable对象
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        //创建匹配器
+        ExampleMatcher matcher = ExampleMatcher.matching().
+                withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnoreCase(true);
+        //转换为hospital对象
+        Hospital hospital = new Hospital();
+        BeanUtils.copyProperties(hospitalQueryVo, hospital);
+        //创建对象
+        Example<Hospital> example = Example.of(hospital, matcher);
+        //调用方法查询
+        Page<Hospital> all = hospitalReponsitory.findAll(example, pageable);
+        return all;
     }
 
 }
