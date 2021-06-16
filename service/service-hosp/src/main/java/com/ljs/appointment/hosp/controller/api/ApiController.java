@@ -3,6 +3,7 @@ package com.ljs.appointment.hosp.controller.api;
 import com.ljs.appointment.common.helper.HttpRequestHelper;
 import com.ljs.appointment.common.util.MD5;
 import com.ljs.appointment.exception.AppointmentException;
+import com.ljs.appointment.hosp.service.DepartmentService;
 import com.ljs.appointment.hosp.service.HospitalService;
 import com.ljs.appointment.hosp.service.HospitalSetService;
 import com.ljs.appointment.model.hosp.Hospital;
@@ -29,6 +30,8 @@ public class ApiController {
     @Autowired
     private HospitalSetService hospitalSetService;
 
+    @Autowired
+    private DepartmentService departmentService;
     /**
      * 上传医院信息,通过签名验证识别身份,拿到的签名均使用MD5进行加密
      * 对上传的图片进行了格式修正
@@ -67,4 +70,19 @@ public class ApiController {
         Hospital hospital = hospitalService.getByHoscode(hoscode);
         return Result.ok(hospital);
     }
+    @ApiOperation("上传科室信息")
+    @PostMapping("/saveDepartment")
+    public Result saveDepartment(HttpServletRequest request) {
+        Map<String, Object> paramMap = HttpRequestHelper.switchMap(request.getParameterMap());
+        String sign = (String) paramMap.get("sign");
+        String hoscode = (String) paramMap.get("hoscode");
+        String signKey = hospitalSetService.getSignKey(hoscode);
+        String secureKey = MD5.encrypt(signKey);
+        if (!sign.equals(secureKey)) {
+            throw new AppointmentException(ResultCodeEnum.SIGN_ERROR);
+        }
+        departmentService.save(paramMap);
+        return Result.ok();
+    }
+
 }
