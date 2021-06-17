@@ -95,7 +95,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Override
     public Map<String, Object> getHospById(String id) {
-        HashMap<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         Hospital hospital = hospitalReponsitory.findById(id).get();
         this.setHospitalHosType(hospital);
         //医院基本信息
@@ -105,6 +105,15 @@ public class HospitalServiceImpl implements HospitalService {
         //不需要重复返回
         hospital.setBookingRule(null);
         return result;
+    }
+    //根据医院编号 获得医院名称
+    @Override
+    public String getHospName(String hoscode) {
+        Hospital hospital = hospitalReponsitory.getHospitalByHoscode(hoscode);
+        if (hospital != null) {
+            return hospital.getHosname();
+        }
+        return null;
     }
 
     private Hospital setHospitalHosType(Hospital hospital) {
