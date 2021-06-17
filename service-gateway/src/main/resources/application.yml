@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 81
 
 spring:
   application:
@@ -22,3 +22,5 @@ spring:
           uri: lb://service-cmn
           predicates:
             - Path=/*/cmn/**
+  redis:
+    host: 169.254.27.128
