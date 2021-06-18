@@ -121,6 +121,19 @@ public class HospitalServiceImpl implements HospitalService {
         return hospitalReponsitory.findHospitalByHosnameLike(hosname);
     }
 
+    @Override
+    public Map<String, Object> item(String hoscode) {
+        Map<String, Object> result = new HashMap<>();
+        //医院详情
+        Hospital hospital = this.setHospitalHosType(this.getByHoscode(hoscode));
+        result.put("hospital", hospital);
+        //预约规则
+        result.put("bookingRule", hospital.getBookingRule());
+        //不需要重复返回
+        hospital.setBookingRule(null);
+        return result;
+    }
+
     private Hospital setHospitalHosType(Hospital hospital) {
         //根据dictcode和value值获取医院等级名称
         String hostypeString = dictFeignClient.getName("Hostype", hospital.getHostype());

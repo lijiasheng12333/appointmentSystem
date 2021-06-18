@@ -17,7 +17,7 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   redis:
-    host: 169.254.27.128
+    host: 8.140.126.195
     database: 0
     timeout: 1800000
     lettuce:
