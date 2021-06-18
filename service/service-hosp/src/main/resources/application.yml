@@ -17,7 +17,7 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   redis:
-    host: 169.254.27.128
+    host: 8.140.126.195
     #sentinel
 #    sentinel:
 #      transport:
@@ -26,7 +26,7 @@ spring:
   #mongodb配置
   data:
     mongodb:
-      host: 169.254.27.128
+      host: 8.140.126.195
       port: 27017
       database: yygh_hosp
   #rabbitmq

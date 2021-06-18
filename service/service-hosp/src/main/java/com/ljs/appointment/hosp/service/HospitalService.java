@@ -5,6 +5,7 @@ import com.ljs.appointment.model.hosp.Hospital;
 import com.ljs.appointment.vo.hosp.HospitalQueryVo;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Map;
 
 public interface HospitalService {
@@ -19,4 +20,6 @@ public interface HospitalService {
     Map<String, Object> getHospById(String id);
 
     String getHospName(String hoscode);
+    //根据医院名称查询
+    List<Hospital> findByHosname(String hosname);
 }

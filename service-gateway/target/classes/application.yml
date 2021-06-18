@@ -1,5 +1,5 @@
 server:
-  port: 81
+  port: 80
 
 spring:
   application:
@@ -23,4 +23,4 @@ spring:
           predicates:
             - Path=/*/cmn/**
   redis:
-    host: 169.254.27.128
+    host: 8.140.126.195
