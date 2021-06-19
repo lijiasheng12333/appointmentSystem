@@ -10,6 +10,7 @@ import com.ljs.appointment.model.hosp.HospitalSet;
 import com.ljs.appointment.vo.hosp.HospitalQueryVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
