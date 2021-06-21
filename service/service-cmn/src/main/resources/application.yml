@@ -20,10 +20,11 @@ spring:
     host: 8.140.126.195
     database: 0
     timeout: 1800000
+    password: Ljs19970815!
     lettuce:
       pool:
         max-active: 20
-        max-wait: 1
+        max-wait: -1
         #最大阻塞时间(如负数 则无限制)
         max-idle: 5
         min-idle: 0

@@ -18,8 +18,17 @@ spring:
     time-zone: GMT+8
   redis:
     host: 8.140.126.195
-    #sentinel
-#    sentinel:
+    password: Ljs19970815!
+    database: 0
+    #sentine
+    timeout: 1800000
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5
+        min-idle: 0
+  #    sentinel:
 #      transport:
  #       dashboard: localhost:8858
 #        #port 不用找 默认从8719,开始找端口

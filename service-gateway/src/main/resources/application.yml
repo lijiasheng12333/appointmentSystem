@@ -29,3 +29,7 @@ spring:
             - Path=/*/user/**
   redis:
     host: 8.140.126.195
+
+sms:
+  qcloud:
+    appid:
