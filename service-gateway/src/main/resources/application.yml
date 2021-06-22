@@ -27,6 +27,21 @@ spring:
           uri: lb://service-user
           predicates:
             - Path=/*/user/**
+
+        - id: service-user
+          uri: lb://service-user
+          predicates:
+            - Path=/*/ucenter/**
+
+        - id: service-msm
+          uri: lb://service-msm
+          predicates:
+            - Path=/*/msm/**
+
+        - id: service-oss
+          uri: lb://service-oss
+          predicates:
+            - Path=/*/oss/**
   redis:
     host: 8.140.126.195
 

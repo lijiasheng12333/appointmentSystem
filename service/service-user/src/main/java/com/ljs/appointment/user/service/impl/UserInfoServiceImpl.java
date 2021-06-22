@@ -23,6 +23,7 @@ public class UserInfoServiceImpl extends
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
     //登录
     @Override
     public Map<String, Object> loginUser(LoginVo loginVo) {
@@ -33,22 +34,37 @@ public class UserInfoServiceImpl extends
         if (StringUtils.isEmpty(phone) || StringUtils.isEmpty(code)) {
             throw new AppointmentException(ResultCodeEnum.PARAM_ERROR);
         }
-        //阿里云短信  判断验证码是否一致
+        //腾讯云短信  判断验证码是否一致
         String redisCode = redisTemplate.opsForValue().get(phone);
         if (!code.equals(redisCode)) {
             throw new AppointmentException(ResultCodeEnum.CODE_ERROR);
         }
-        //判断是否第一次登录 根据手机号查询数据库  不存在就第一次登录
-        QueryWrapper<UserInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("phone", phone);
-        UserInfo userInfo = baseMapper.selectOne(queryWrapper);
+        //绑定手机号码
+        UserInfo userInfo = null;
+        if(!StringUtils.isEmpty(loginVo.getOpenid())) {
+            userInfo = this.selectWxInfoOpenId(loginVo.getOpenid());
+            if(null != userInfo) {
+                userInfo.setPhone(loginVo.getPhone());
+                this.updateById(userInfo);
+            } else {
+                throw new AppointmentException(ResultCodeEnum.DATA_ERROR);
+            }
+        }
+        //如果为空 就正常手机登录
+
         if (userInfo == null) {
-            //表示是第一次登录
-            userInfo = new UserInfo();
-            userInfo.setName("");
-            userInfo.setPhone(phone);
-            userInfo.setStatus(1);
-            baseMapper.insert(userInfo);
+            //判断是否第一次登录 根据手机号查询数据库  不存在就第一次登录
+            QueryWrapper<UserInfo> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("phone", phone);
+            userInfo = baseMapper.selectOne(queryWrapper);
+            if (userInfo == null) {
+                //表示是第一次登录
+                userInfo = new UserInfo();
+                userInfo.setName("");
+                userInfo.setPhone(phone);
+                userInfo.setStatus(1);
+                baseMapper.insert(userInfo);
+            }
         }
         //校验是否禁用
         if (userInfo.getStatus() == 0) {
@@ -70,5 +86,13 @@ public class UserInfoServiceImpl extends
         String token = JwtHelper.createToken(userInfo.getId(), name);
         map.put("token",token);
         return map;
+    }
+
+    @Override
+    public UserInfo selectWxInfoOpenId(String openid) {
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("openid", openid);
+        UserInfo userInfo = baseMapper.selectOne(wrapper);
+        return userInfo;
     }
 }

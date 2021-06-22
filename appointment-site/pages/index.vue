@@ -12,9 +12,9 @@
           <el-autocomplete class="search-input"
           prefix-icon="el-icon-search"
           v-model="hosname"
-          :fetch-suggestions="querySearchAsync"
-          placeholder="点击输入医院名称"
-          @select="handleSelect">
+          :fetch-suggestions="querySearchAsync"  
+          @select="handleSelect"
+          placeholder="点击输入医院名称">
 
 
         <span slot="suffix" class="search-btn v-link highlight clickable selected">搜索 </span>
