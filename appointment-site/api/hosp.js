@@ -25,24 +25,33 @@ export default {
             method: 'get'
         })
     },
-    findDepartment(hoscode) {
-        return request({
-            url: `${api_name}/department/${hoscode}`,
-            method: 'get'
-        })
-    },
-    //根据医院编号查询详情
-    show(hoscode) {
-        return request({
-            url: `${api_name}/${hoscode}`,
-            method: 'get'
-        })
-    },
     //根据编号查询科室信息
     findDepartment(hoscode) {
         return request({
             url: `${api_name}/department/${hoscode}`,
             method: 'get'
         })
-    }  
+    },
+    //获取可预约信息
+    getBookingScheduleRule(page, limit, hoscode, depcode) {
+        return request({
+            url: `${api_name}/auth/getBookingScheduleRule/${page}/${limit}/${hoscode}/${depcode}`,
+            method: 'get'
+        })
+    },
+    //获取排班详情信息
+    findScheduleList(hoscode, depcode, workDate) {
+        return request({
+            url: `${api_name}/auth/findScheduleList/${hoscode}/${depcode}/${workDate}`,
+            method: 'get'
+        })
+    },
+    //根据排班id获取排班信息
+    getSchedule(id) {
+        return request({
+          url: `${api_name}/getSchedule/${id}`,
+          method: 'get'
+        })
+        }
+           
 }

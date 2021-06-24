@@ -17,4 +17,10 @@ public interface ScheduleService {
     Map<String, Object> getRuleSchedule(long page, long limit, String hoscode, String depcode);
 
     List<Schedule> getDetailSchedule(String hoscode, String depcode, String workDate);
+
+    //获得可预约排班数据
+    Map<String, Object> getBookingScheduleRule(Integer page, Integer limit, String hoscode, String depcode);
+
+    //根据id获取排版数据
+    Schedule getScheduleById(String scheduleId);
 }
