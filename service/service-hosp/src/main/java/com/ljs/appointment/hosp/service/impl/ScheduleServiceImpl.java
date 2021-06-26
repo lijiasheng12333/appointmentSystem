@@ -3,7 +3,9 @@ package com.ljs.appointment.hosp.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ljs.appointment.exception.AppointmentException;
+import com.ljs.appointment.hosp.mapper.ScheduleMapper;
 import com.ljs.appointment.hosp.reponsitory.ScheduleReponsitory;
 import com.ljs.appointment.hosp.service.DepartmentService;
 import com.ljs.appointment.hosp.service.HospitalService;
@@ -14,6 +16,7 @@ import com.ljs.appointment.model.hosp.Hospital;
 import com.ljs.appointment.model.hosp.Schedule;
 import com.ljs.appointment.result.ResultCodeEnum;
 import com.ljs.appointment.vo.hosp.BookingScheduleRuleVo;
+import com.ljs.appointment.vo.hosp.ScheduleOrderVo;
 import com.ljs.appointment.vo.hosp.ScheduleQueryVo;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -31,7 +34,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ScheduleServiceImpl implements ScheduleService {
+public class ScheduleServiceImpl extends ServiceImpl<ScheduleMapper, Schedule> implements ScheduleService {
     @Autowired
     private ScheduleReponsitory scheduleReponsitory;
 
@@ -260,6 +263,65 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleReponsitory.findById(scheduleId).get();
         this.packageSchedule(schedule);
         return schedule;
+    }
+
+    @Override
+    public ScheduleOrderVo getScheduleOrderVo(String scheduleId) {
+        ScheduleOrderVo scheduleOrderVo = new ScheduleOrderVo();
+        //获取排班信息
+        Schedule schedule = scheduleReponsitory.findById(scheduleId).get();
+        //Schedule schedule = baseMapper.selectById(scheduleId);
+        if (schedule == null) {
+            throw new AppointmentException(ResultCodeEnum.PARAM_ERROR);
+        }
+        //获取预约规则信息
+        Hospital hospital = hospitalService.getByHoscode(schedule.getHoscode());
+        if (hospital == null) {
+            throw new AppointmentException(ResultCodeEnum.PARAM_ERROR);
+        }
+        BookingRule bookingRule = hospital.getBookingRule();
+        if (bookingRule == null) {
+            throw new AppointmentException(ResultCodeEnum.PARAM_ERROR);
+        }
+        //把获取的数据设置进去
+        scheduleOrderVo.setHoscode(schedule.getHoscode());
+        scheduleOrderVo.setHosname(hospitalService.getHospName(schedule.getHoscode()));
+        scheduleOrderVo.setDepcode(schedule.getDepcode());
+        scheduleOrderVo.setDepname(departmentService.getDepName(schedule.getHoscode(), schedule.getDepcode()));
+        scheduleOrderVo.setHosScheduleId(schedule.getHosScheduleId());
+        scheduleOrderVo.setAvailableNumber(schedule.getAvailableNumber());
+        scheduleOrderVo.setTitle(schedule.getTitle());
+        scheduleOrderVo.setReserveDate(schedule.getWorkDate());
+        scheduleOrderVo.setReserveTime(schedule.getWorkTime());
+        scheduleOrderVo.setAmount(schedule.getAmount());
+
+        //退号截止天数
+        int quitDay = bookingRule.getQuitDay();
+        DateTime quitTime = this.getDateTime(new DateTime(schedule.getWorkDate()).plusDays(quitDay).toDate(),
+                bookingRule.getQuitTime());
+        scheduleOrderVo.setQuitTime(quitTime.toDate());
+
+        //预约开始时间
+        DateTime startTime = this.getDateTime(new Date(), bookingRule.getReleaseTime());
+        scheduleOrderVo.setStartTime(startTime.toDate());
+
+        //预约截止时间
+        DateTime endTime = this.getDateTime(new DateTime().plusDays(bookingRule.getCycle()).toDate(),
+                bookingRule.getStopTime());
+        scheduleOrderVo.setEndTime(endTime.toDate());
+
+        //当天停止挂号时间
+        DateTime stopTime = this.getDateTime(new Date(), bookingRule.getStopTime());
+        scheduleOrderVo.setStartTime(startTime.toDate());
+        return scheduleOrderVo;
+    }
+
+    //更新排班信息 用与mq操作
+    @Override
+    public void update(Schedule schedule) {
+        schedule.setUpdateTime(new Date());
+        //主键一致就是更新
+        scheduleReponsitory.save(schedule);
     }
 
     //获取可预约日期分页数据

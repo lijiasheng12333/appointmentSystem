@@ -8,7 +8,7 @@ spring:
     active: dev
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/yygh_hosp?characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/yygh_order?characterEncoding=utf-8&useSSL=false
     username: root
     password: 19970815
   jackson:
@@ -22,7 +22,23 @@ spring:
       discovery:
         server-addr: localhost:8848
   rabbitmq:
-    host: localhost
+    host: 8.140.126.195
     port: 5672
     username: guest
     password: guest
+  redis:
+    host: 8.140.126.195
+    password: Ljs19970815!
+    database: 0
+    timeout: 1800000
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5
+        min-idle: 0
+
+weixin:
+  appid: wx74862e0dfcf69954
+  partner: 1558950191
+  partnerkey: T6m9iK73b0kn9g5v426MKfHQH7X8rKwb

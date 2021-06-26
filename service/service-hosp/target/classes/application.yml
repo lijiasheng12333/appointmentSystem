@@ -40,7 +40,7 @@ spring:
       database: yygh_hosp
   #rabbitmq
   rabbitmq:
-    host: localhost
+    host: 8.140.126.195
     port: 5672
     username: guest
     password: guest
