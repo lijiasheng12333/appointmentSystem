@@ -1,11 +1,17 @@
 package com.ljs.appointment.order.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.github.wxpay.sdk.WXPayConstants;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.ljs.appointment.enums.PaymentStatusEnum;
 import com.ljs.appointment.enums.PaymentTypeEnum;
+import com.ljs.appointment.enums.RefundStatusEnum;
 import com.ljs.appointment.model.order.OrderInfo;
+import com.ljs.appointment.model.order.PaymentInfo;
+import com.ljs.appointment.model.order.RefundInfo;
 import com.ljs.appointment.order.service.OrderService;
 import com.ljs.appointment.order.service.PaymentService;
+import com.ljs.appointment.order.service.RefundInfoService;
 import com.ljs.appointment.order.service.WeixinService;
 import com.ljs.appointment.order.utils.ConstantPropertiesUtils;
 import com.ljs.appointment.order.utils.HttpClient;
@@ -13,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +35,9 @@ public class WeixinServiceImpl implements WeixinService {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private RefundInfoService refundInfoService;
 
     //生成微信支付二维码
     @Override
@@ -110,6 +120,57 @@ public class WeixinServiceImpl implements WeixinService {
             return resultMap;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    //退款
+    @Override
+    public Boolean refund(Long orderId) {
+        try {
+            //获取支付记录
+            PaymentInfo paymentInfo = paymentService.getPaymentInfo(orderId, PaymentTypeEnum.WEIXIN.getStatus());
+            //添加信息到退款记录表
+            RefundInfo refundInfo = refundInfoService.saveRefundInfo(paymentInfo);
+            //判断当前订单是否已经退款
+            if(refundInfo.getRefundStatus().intValue() == RefundStatusEnum.REFUND.getStatus().intValue()) {
+                return true;
+            }
+            //调用微信接口实现tuikuan
+            //封装参数
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("appid",ConstantPropertiesUtils.APPID);       //公众账号ID
+            paramMap.put("mch_id",ConstantPropertiesUtils.PARTNER);   //商户编号
+            paramMap.put("nonce_str",WXPayUtil.generateNonceStr());
+            paramMap.put("transaction_id",paymentInfo.getTradeNo()); //微信订单号
+            paramMap.put("out_trade_no",paymentInfo.getOutTradeNo()); //商户订单编号
+            paramMap.put("out_refund_no","tk"+paymentInfo.getOutTradeNo()); //商户退款单号
+//       paramMap.put("total_fee",paymentInfoQuery.getTotalAmount().multiply(new BigDecimal("100")).longValue()+"");
+//       paramMap.put("refund_fee",paymentInfoQuery.getTotalAmount().multiply(new BigDecimal("100")).longValue()+"");
+            paramMap.put("total_fee","1");
+            paramMap.put("refund_fee","1");
+            String paramXml = WXPayUtil.generateSignedXml(paramMap,ConstantPropertiesUtils.PARTNERKEY);
+            //设置调用接口内容
+            HttpClient client = new HttpClient("https://api.mch.weixin.qq.com/secapi/pay/refund");
+            client.setXmlParam(paramXml);
+            client.setHttps(true);
+            client.setCert(true);
+            client.setCertPassword(ConstantPropertiesUtils.PARTNER);
+            client.post();
+            //接收返回数据
+            String xml = client.getContent();
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(xml);
+            if (null != resultMap && WXPayConstants.SUCCESS.equalsIgnoreCase(resultMap.get("result_code"))) {
+                refundInfo.setCallbackTime(new Date());
+                refundInfo.setTradeNo(resultMap.get("refund_id"));
+                refundInfo.setRefundStatus(RefundStatusEnum.REFUND.getStatus());
+                refundInfo.setCallbackContent(JSONObject.toJSONString(resultMap));
+                refundInfoService.updateById(refundInfo);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

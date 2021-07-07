@@ -102,12 +102,13 @@ public class MsmServiceImpl implements MsmService {
         req.setPhoneNumberSet(param1);
         //
         /*String[] param2 = {code};*/
-        String[] param = new String[5];
-        param[0] = (String) map.get("title");
+        //String[] param = new String[5];
+        String[] param = {};
+        /*param[0] = (String) map.get("title");
         param[1] = map.get("amount").toString();
         param[2] = map.get("reserveDate").toString();
         param[3] = (String) map.get("name");
-        param[4] = (String) map.get("quitTime");
+        param[4] = (String) map.get("quitTime");*/
         req.setTemplateParamSet(param);
         try {
             SendSmsResponse res = client.SendSms(req);

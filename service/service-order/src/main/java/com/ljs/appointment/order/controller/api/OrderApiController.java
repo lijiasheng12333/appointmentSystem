@@ -8,12 +8,14 @@ import com.ljs.appointment.model.user.UserInfo;
 import com.ljs.appointment.order.service.OrderService;
 import com.ljs.appointment.result.Result;
 import com.ljs.appointment.utils.AuthContextHolder;
+import com.ljs.appointment.vo.order.OrderCountQueryVo;
 import com.ljs.appointment.vo.order.OrderQueryVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/order/orderInfo")
@@ -56,5 +58,18 @@ public class OrderApiController {
     public Result getStatusList() {
         return Result.ok(OrderStatusEnum.getStatusList());
     }
+
+    @ApiOperation(value = "取消预约")
+    @GetMapping("/auth/cancelOrder/{orderId}")
+    public Result cancelOrder(@PathVariable("orderId") Long orderId) {
+        return Result.ok(orderService.cancelOrder(orderId));
+    }
+
+    @ApiOperation(value = "获取订单统计数据")
+    @PostMapping("inner/getCountMap")
+    public Map<String, Object> getCountMap(@RequestBody OrderCountQueryVo orderCountQueryVo) {
+        return orderService.getCountMap(orderCountQueryVo);
+    }
+
 
 }

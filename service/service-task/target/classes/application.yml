@@ -1,0 +1,28 @@
+server:
+  port: 8207
+
+spring:
+  application:
+    name: service-task
+  profiles:
+    active: dev
+  redis:
+    host: 8.140.126.195
+    password: Ljs19970815!
+    database: 0
+    timeout: 1800000
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5
+        min-idle: 0
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  rabbitmq:
+    host: 8.140.126.195
+    port: 5672
+    username: guest
+    password: guest
